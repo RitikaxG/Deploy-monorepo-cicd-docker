@@ -23,7 +23,9 @@ jobs:
           context: .
           file: docker/Dockerfile.migrate 
           push: true
-          tags: ritikaxg/migrate:${{ github.sha }}
+          tags: | 
+            ritikaxg/migrate:${{ github.sha }}
+            ritikaxg/migrate:latest
           build-args: |
             ENV_FILE=.env.compose
 
@@ -33,7 +35,9 @@ jobs:
           context: .
           file: docker/Dockerfile.backend
           push: true
-          tags: ritikaxg/backend:${{ github.sha }}
+          tags: | 
+            ritikaxg/backend:${{ github.sha }}
+            ritikaxg/backend:latest
           build-args: |
             ENV_FILE=.env.compose
 
@@ -43,7 +47,9 @@ jobs:
           context: .
           file: docker/Dockerfile.ws 
           push: true
-          tags: ritikaxg/ws:${{ github.sha }}
+          tags: | 
+            ritikaxg/ws:${{ github.sha }}
+            ritikaxg/ws:latest
           build-args: |
             ENV_FILE=.env.compose
 
@@ -53,7 +59,9 @@ jobs:
           context: .
           file: docker/Dockerfile.frontend 
           push: true
-          tags: ritikaxg/frontend:${{ github.sha }}
+          tags: |
+            ritikaxg/frontend:${{ github.sha }}
+            ritikaxg/frontend:latest
           build-args: |
             ENV_FILE=.env.compose
             DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
@@ -67,14 +75,11 @@ jobs:
           port: 22
           script: |
             cd /home/ubuntu/Deploy-monorepo-cicd-docker
+            git pull origin main
 
-            sed "s|\$GITHUB_SHA|${{ github.sha }}|g" docker-compose.prod.yml > docker-compose.temp.yml
-
-            docker compose -f docker-compose.temp.yml pull
-            docker compose -f docker-compose.temp.yml down
-            docker compose -f docker-compose.temp.yml up -d
-
-            rm docker-compose.temp.yml
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.prod.yml up -d
 
 
 

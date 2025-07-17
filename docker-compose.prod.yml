@@ -10,14 +10,14 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   migrate:
-    image: ritikaxg/migrate:${GITHUB_SHA}
+    image: ritikaxg/migrate:latest
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
     depends_on:
       - postgres
 
   backend:
-    image: ritikaxg/backend:${GITHUB_SHA}
+    image: ritikaxg/backend:latest
     ports:
       - '8080:8080'
     depends_on:
@@ -25,7 +25,7 @@ services:
       - migrate
 
   ws:
-    image: ritikaxg/ws:${GITHUB_SHA}
+    image: ritikaxg/ws:latest
     ports:
       - '8081:8081'
     depends_on:
@@ -33,7 +33,7 @@ services:
       - migrate
 
   frontend:
-    image: ritikaxg/frontend:${GITHUB_SHA}
+    image: ritikaxg/frontend:latest
     ports:
       - '3000:3000'
     depends_on:
