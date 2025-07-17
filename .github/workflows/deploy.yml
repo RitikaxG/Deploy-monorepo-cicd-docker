@@ -1,4 +1,4 @@
-name: Deploy all services (CD)
+name: Deploy all services to VM (CD)
 on:
   push:
     branches: [main]
