@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes: 
+      - postgres_data:/var/lib/postgresql/data
+
+  migrate:
+    image: ritikaxg/migrate:${GITHUB_SHA}
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres
+    depends_on:
+      - postgres
+
+  backend:
+    image: ritikaxg/backend:${GITHUB_SHA}
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+      - migrate
+
+  ws:
+    image: ritikaxg/ws:${GITHUB_SHA}
+    ports:
+      - '8081:8081'
+    depends_on:
+      - postgres
+      - migrate
+
+  frontend:
+    image: ritikaxg/frontend:${GITHUB_SHA}
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+      - migrate
+  
+volumes:
+  postgres_data:
+
+
+
+
+
+
+

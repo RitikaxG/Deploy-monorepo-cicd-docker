@@ -1,0 +1,22 @@
+FROM oven/bun:1
+
+WORKDIR /usr/src/app
+
+# Install OpenSSL for Prisma 
+RUN apt-get update -y && apt-get install -y netcat-openbsd openssl 
+
+ARG ENV_FILE
+COPY ./packages/db/${ENV_FILE} ./packages/db/.env
+
+# Copy only required files
+COPY ./packages ./packages
+COPY ./bun.lock ./bun.lock
+COPY ./package.json ./package.json
+
+RUN bun install
+
+COPY ./scripts/wait-for.sh ./scripts/wait-for.sh
+RUN chmod +x ./scripts/wait-for.sh
+
+# Prisma version
+CMD ["./scripts/wait-for.sh", "postgres", "5432", "bunx", "prisma", "migrate", "deploy", "--schema=packages/db/prisma/schema.prisma"]
